@@ -2,3 +2,4 @@
 /node_modules/
 /resources/dist/
 /.phpunit.result.cache
+/composer.lock
