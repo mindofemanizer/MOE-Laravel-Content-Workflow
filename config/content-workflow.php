@@ -143,6 +143,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Sensitive Fields
+    |--------------------------------------------------------------------------
+    |
+    | Fields to exclude from version snapshots and audits.
+    | Merged with each model's $hidden property.
+    |
+    */
+    'sensitive_fields' => [
+        'password',
+        'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Editor
+    |--------------------------------------------------------------------------
+    |
+    | Configure the WYSIWYG editor behavior.
+    |
+    */
+    'editor' => [
+        'allowed_tags' => '<p><br><strong><em><u><s><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><pre><code><hr><a><img><table><thead><tbody><tr><th><td><span><div>',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Model Binding
     |--------------------------------------------------------------------------
     |

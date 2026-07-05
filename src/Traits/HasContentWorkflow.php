@@ -132,13 +132,34 @@ trait HasContentWorkflow
 
     public function getContentData(): array
     {
-        return $this->toArray();
+        $data = $this->getAttributes();
+
+        foreach ($this->getContentDataExcludedFields() as $field) {
+            unset($data[$field]);
+        }
+
+        return $data;
+    }
+
+    protected function getContentDataExcludedFields(): array
+    {
+        return array_merge(
+            $this->hidden ?? [],
+            config('content-workflow.sensitive_fields', [
+                'password',
+                'remember_token',
+                'two_factor_secret',
+                'two_factor_recovery_codes',
+            ])
+        );
     }
 
     public function restoreFromData(array $data): bool
     {
-        // Remove protected fields
         unset($data['id'], $data['created_at'], $data['updated_at']);
+
+        $allowedFields = array_keys($this->getContentData());
+        $data = array_intersect_key($data, array_flip($allowedFields));
 
         return $this->update($data);
     }

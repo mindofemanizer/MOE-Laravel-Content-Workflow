@@ -34,7 +34,23 @@ class ContentEditor extends Component
 
     public function updatedEditorContent(): void
     {
+        $this->editorContent = $this->sanitizeHtml($this->editorContent);
         $this->content->setAttribute($this->field, $this->editorContent);
+    }
+
+    private function sanitizeHtml(string $html): string
+    {
+        $html = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html);
+        $html = preg_replace('/<[^>]*on\w+\s*=\s*"[^"]*"/i', '', $html);
+        $html = preg_replace('/<[^>]*on\w+\s*=\s*\'[^\']*\'/i', '', $html);
+        $html = preg_replace('/<[^>]*on\w+\s*=\s*\S+/i', '', $html);
+        $html = str_ireplace('javascript:', '', $html);
+
+        $allowedTags = config('content-workflow.editor.allowed_tags',
+            '<p><br><strong><em><u><s><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><pre><code><hr><a><img><table><thead><tbody><tr><th><td><span><div>'
+        );
+
+        return strip_tags($html, $allowedTags);
     }
 
     public function render(): View
