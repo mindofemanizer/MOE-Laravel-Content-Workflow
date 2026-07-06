@@ -277,7 +277,9 @@ trait HasContentWorkflow
         $to = $this->getAttribute($field);
 
         if ($to === 'published' && $from !== 'published') {
-            $this->setPublishedAt(now());
+            if ($this->publishedAtField) {
+                $this->{$this->publishedAtField} = now();
+            }
             $this->onPublished();
         } elseif ($from === 'published' && $to !== 'published') {
             $this->onUnpublished();

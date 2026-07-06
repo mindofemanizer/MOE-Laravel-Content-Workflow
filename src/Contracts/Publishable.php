@@ -121,23 +121,4 @@ interface Publishable
      */
     public function canPerformAction(string $action, ?\Illuminate\Contracts\Auth\Authenticatable $user = null): bool;
 
-    /**
-     * Get the morph class name (from Eloquent Model)
-     */
-    public function getMorphClass(): string;
-
-    /**
-     * Get the primary key value (from Eloquent Model)
-     */
-    public function getKey(): mixed;
-
-    /**
-     * Get an attribute from the model
-     */
-    public function getAttribute(string $key): mixed;
-
-    /**
-     * Set an attribute on the model
-     */
-    public function setAttribute(string $key, mixed $value): mixed;
 }
