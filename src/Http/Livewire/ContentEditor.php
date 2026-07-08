@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MOE\ContentWorkflow\Http\Livewire;
 
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use MOE\ContentWorkflow\Contracts\Publishable;
@@ -20,16 +21,18 @@ class ContentEditor extends Component
     public ?string $placeholder = null;
     public bool $showToolbar = true;
 
-    protected $listeners = [
-        'editorImageUpload' => 'handleImageUpload',
-    ];
-
     public function mount(Publishable $content, string $field = 'content', ?string $label = null): void
     {
         $this->content = $content;
         $this->field = $field;
         $this->label = $label ?? ucfirst($field);
         $this->editorContent = $content->getAttribute($field) ?? '';
+    }
+
+    #[On('editorImageUpload')]
+    public function handleImageUpload(): void
+    {
+        // Handle image upload from editor
     }
 
     public function updatedEditorContent(): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MOE\ContentWorkflow\Http\Livewire;
 
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use MOE\ContentWorkflow\Contracts\Publishable;
 use MOE\ContentWorkflow\Facades\MoeContent;
@@ -12,15 +13,15 @@ use MOE\ContentWorkflow\Facades\MoeContent;
 class ContentScheduler extends Component
 {
     public Publishable $content;
+
+    #[Validate('required|in:publish,unpublish,archive')]
     public string $action = 'publish';
+
+    #[Validate('required|date|after:now')]
     public ?string $scheduledAt = null;
+
     public ?string $scheduledTime = null;
     public array $pendingSchedules = [];
-
-    protected $rules = [
-        'action' => 'required|in:publish,unpublish,archive',
-        'scheduledAt' => 'required|date|after:now',
-    ];
 
     public function mount(Publishable $content): void
     {
