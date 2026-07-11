@@ -14,7 +14,7 @@
                         $label = $info['label'] ?? ucfirst($status);
                     @endphp
                     <button
-                        wire:click="transition('{{ $status }}')"
+                        wire:click="changeStatus('{{ $status }}')"
                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                         {{ $label }}

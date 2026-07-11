@@ -14,8 +14,8 @@ use MOE\ContentWorkflow\Models\ContentVersion;
 trait HasContentWorkflow
 {
     protected ?string $contentStatusField = null;
-    protected ?string $publishedAtField = 'published_at';
-    protected ?string $unpublishedAtField = 'unpublished_at';
+    protected ?string $publishedAtField = null;
+    protected ?string $unpublishedAtField = null;
     protected ?string $authorField = 'user_id';
     protected ?string $editorField = 'updated_by';
 

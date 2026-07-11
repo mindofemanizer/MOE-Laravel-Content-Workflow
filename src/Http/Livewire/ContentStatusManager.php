@@ -22,7 +22,7 @@ class ContentStatusManager extends Component
         $this->refreshTransitions();
     }
 
-    public function transition(string $toStatus): void
+    public function changeStatus(string $toStatus): void
     {
         try {
             MoeContent::transition($this->content, $toStatus, $this->reason);

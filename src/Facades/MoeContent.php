@@ -6,6 +6,7 @@ namespace MOE\ContentWorkflow\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use MOE\ContentWorkflow\ContentWorkflowManager;
 use MOE\ContentWorkflow\Contracts\Publishable;
 
 /**
