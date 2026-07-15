@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace MOE\ContentWorkflow\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use MOE\ContentWorkflow\Models\ContentSchedule;
-use MOE\ContentWorkflow\Models\ContentVersion;
-use MOE\ContentWorkflow\Models\ContentAudit;
 
 interface Publishable
 {

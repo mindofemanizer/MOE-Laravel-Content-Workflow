@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MOE\ContentWorkflow\Services;
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use MOE\ContentWorkflow\Contracts\Publishable;
 use MOE\ContentWorkflow\Models\ContentAudit;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MOE\ContentWorkflow\Models;
 
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -38,19 +38,19 @@ class ContentSchedule extends Model
         return $this->morphTo();
     }
 
-    public function scopePending($query)
+    public function scopePending(Builder $query): void
     {
-        return $query->where('status', 'pending');
+        $query->where('status', 'pending');
     }
 
-    public function scopeDue($query)
+    public function scopeDue(Builder $query): void
     {
-        return $query->pending()->where('scheduled_at', '<=', now());
+        $query->pending()->where('scheduled_at', '<=', now());
     }
 
-    public function scopeByAction($query, string $action)
+    public function scopeByAction(Builder $query, string $action): void
     {
-        return $query->where('action', $action);
+        $query->where('action', $action);
     }
 
     public function isPending(): bool
@@ -60,7 +60,7 @@ class ContentSchedule extends Model
 
     public function isDue(): bool
     {
-        return $this->isPending() && $this->scheduled_at <= now();
+        return $this->isPending() && $this->scheduled_at !== null && $this->scheduled_at <= now();
     }
 
     public function markExecuted(): void

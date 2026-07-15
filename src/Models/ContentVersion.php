@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MOE\ContentWorkflow\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -40,14 +41,14 @@ class ContentVersion extends Model
         return $this->morphTo();
     }
 
-    public function scopeCurrent($query)
+    public function scopeCurrent(Builder $query): void
     {
-        return $query->where('is_current', true);
+        $query->where('is_current', true);
     }
 
-    public function scopeForContent($query, string $type, string $id)
+    public function scopeForContent(Builder $query, string $type, string $id): void
     {
-        return $query->where('content_type', $type)->where('content_id', $id);
+        $query->where('content_type', $type)->where('content_id', $id);
     }
 
     public function markAsCurrent(): void

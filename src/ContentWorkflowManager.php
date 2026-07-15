@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MOE\ContentWorkflow;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use MOE\ContentWorkflow\Contracts\Publishable;
 use MOE\ContentWorkflow\Services\AuditService;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MOE\ContentWorkflow\Services;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use MOE\ContentWorkflow\Contracts\Publishable;
 
 class StateMachineService
