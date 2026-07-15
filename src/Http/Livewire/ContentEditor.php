@@ -39,6 +39,7 @@ class ContentEditor extends Component
     {
         $this->editorContent = $this->sanitizeHtml($this->editorContent);
         $this->content->setAttribute($this->field, $this->editorContent);
+        $this->content->save();
     }
 
     private function sanitizeHtml(string $html): string

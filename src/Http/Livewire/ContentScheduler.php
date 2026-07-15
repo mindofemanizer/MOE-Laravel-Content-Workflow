@@ -9,6 +9,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use MOE\ContentWorkflow\Contracts\Publishable;
 use MOE\ContentWorkflow\Facades\MoeContent;
+use MOE\ContentWorkflow\Models\ContentSchedule;
 
 class ContentScheduler extends Component
 {
@@ -48,7 +49,7 @@ class ContentScheduler extends Component
 
     public function cancelSchedule(int $scheduleId): void
     {
-        MoeContent::cancelSchedule($this->content);
+        ContentSchedule::findOrFail($scheduleId)->markCancelled();
         $this->refreshSchedules();
     }
 

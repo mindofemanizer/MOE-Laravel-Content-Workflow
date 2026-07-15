@@ -87,9 +87,6 @@ class ContentWorkflowServiceProvider extends ServiceProvider
             return '<?php endif; ?>';
         });
 
-        $blade->directive('moeImage', function ($expression) {
-            return "<?php echo app('moe.image')->render($expression); ?>";
-        });
     }
 
     protected function registerLivewireComponents(): void

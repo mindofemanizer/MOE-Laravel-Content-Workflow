@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MOE\ContentWorkflow\Console;
 
 use Illuminate\Console\Command;
+use MOE\ContentWorkflow\Services\ScheduleService;
 
 class ScheduleContentCommand extends Command
 {
@@ -48,7 +49,31 @@ class ScheduleContentCommand extends Command
             return self::SUCCESS;
         }
 
-        $this->call('moe:publish-workflow', ['--force' => true]);
+        $scheduleService = app(ScheduleService::class);
+
+        if (!$type) {
+            $this->error('The --type option is required to resolve content models.');
+            return self::FAILURE;
+        }
+
+        $errors = 0;
+
+        foreach ($ids as $id) {
+            $content = $type::find($id);
+
+            if (!$content) {
+                $this->error("Content with ID {$id} not found.");
+                $errors++;
+                continue;
+            }
+
+            $scheduleService->create($content, $scheduledAt, $action);
+            $this->line("Scheduled {$action} for {$type} #{$id}.");
+        }
+
+        if ($errors > 0) {
+            return self::FAILURE;
+        }
 
         return self::SUCCESS;
     }
