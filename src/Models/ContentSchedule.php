@@ -33,36 +33,61 @@ class ContentSchedule extends Model
         'cancelled_at' => 'datetime',
     ];
 
+    /**
+     * @return MorphTo
+     */
     public function content(): MorphTo
     {
         return $this->morphTo();
     }
 
+    /**
+     * @param Builder $query
+     * @return void
+     */
     public function scopePending(Builder $query): void
     {
         $query->where('status', 'pending');
     }
 
+    /**
+     * @param Builder $query
+     * @return void
+     */
     public function scopeDue(Builder $query): void
     {
         $query->pending()->where('scheduled_at', '<=', now());
     }
 
+    /**
+     * @param Builder $query
+     * @param string $action
+     * @return void
+     */
     public function scopeByAction(Builder $query, string $action): void
     {
         $query->where('action', $action);
     }
 
+    /**
+     * @return bool
+     */
     public function isPending(): bool
     {
         return $this->status === 'pending';
     }
 
+    /**
+     * @return bool
+     */
     public function isDue(): bool
     {
         return $this->isPending() && $this->scheduled_at !== null && $this->scheduled_at <= now();
     }
 
+    /**
+     * @return void
+     */
     public function markExecuted(): void
     {
         $this->update([
@@ -71,6 +96,10 @@ class ContentSchedule extends Model
         ]);
     }
 
+    /**
+     * @param string $error
+     * @return void
+     */
     public function markFailed(string $error): void
     {
         $this->update([
@@ -79,6 +108,9 @@ class ContentSchedule extends Model
         ]);
     }
 
+    /**
+     * @return void
+     */
     public function markCancelled(): void
     {
         $this->update([
@@ -87,6 +119,9 @@ class ContentSchedule extends Model
         ]);
     }
 
+    /**
+     * @return void
+     */
     protected static function booted(): void
     {
         static::creating(function ($model) {

@@ -24,6 +24,10 @@ class ContentScheduler extends Component
     public ?string $scheduledTime = null;
     public array $pendingSchedules = [];
 
+    /**
+     * @param Publishable $content
+     * @return void
+     */
     public function mount(Publishable $content): void
     {
         $this->content = $content;
@@ -32,6 +36,9 @@ class ContentScheduler extends Component
         $this->refreshSchedules();
     }
 
+    /**
+     * @return void
+     */
     public function schedule(): void
     {
         $this->validate();
@@ -47,12 +54,19 @@ class ContentScheduler extends Component
         }
     }
 
+    /**
+     * @param int $scheduleId
+     * @return void
+     */
     public function cancelSchedule(int $scheduleId): void
     {
         ContentSchedule::findOrFail($scheduleId)->markCancelled();
         $this->refreshSchedules();
     }
 
+    /**
+     * @return void
+     */
     public function refreshSchedules(): void
     {
         $this->pendingSchedules = $this->content->contentSchedules()
@@ -62,6 +76,9 @@ class ContentScheduler extends Component
             ->toArray();
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('moe-content::livewire.content-scheduler');

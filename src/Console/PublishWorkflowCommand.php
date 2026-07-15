@@ -14,10 +14,15 @@ class PublishWorkflowCommand extends Command
 
     protected $description = 'Process all due scheduled content actions';
 
+    /**
+     * @param ScheduleService $schedule
+     * @return int
+     */
     public function handle(ScheduleService $schedule): int
     {
         if (!$this->option('force') && !$this->confirm('Process all due scheduled content actions?', true)) {
             $this->info('Command cancelled.');
+
             return self::SUCCESS;
         }
 

@@ -36,26 +36,48 @@ class ContentAudit extends Model
         'created_at' => 'datetime',
     ];
 
+    /**
+     * @return MorphTo
+     */
     public function content(): MorphTo
     {
         return $this->morphTo();
     }
 
+    /**
+     * @param Builder $query
+     * @param string $action
+     * @return void
+     */
     public function scopeByAction(Builder $query, string $action): void
     {
         $query->where('action', $action);
     }
 
+    /**
+     * @param Builder $query
+     * @param string $type
+     * @param string $id
+     * @return void
+     */
     public function scopeForContent(Builder $query, string $type, string $id): void
     {
         $query->where('content_type', $type)->where('content_id', $id);
     }
 
+    /**
+     * @param Builder $query
+     * @param int $days
+     * @return void
+     */
     public function scopeRecent(Builder $query, int $days = 30): void
     {
         $query->where('created_at', '>=', now()->subDays($days));
     }
 
+    /**
+     * @return void
+     */
     protected static function booted(): void
     {
         static::creating(function ($model) {

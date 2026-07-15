@@ -32,6 +32,11 @@ class ContentWorkflowManager
 
     /**
      * Transition content to a new status
+     *
+     * @param Publishable $content
+     * @param string $toStatus
+     * @param string|null $reason
+     * @return bool
      */
     public function transition(Publishable $content, string $toStatus, ?string $reason = null): bool
     {
@@ -40,6 +45,10 @@ class ContentWorkflowManager
 
     /**
      * Check if transition is allowed
+     *
+     * @param Publishable $content
+     * @param string $toStatus
+     * @return bool
      */
     public function canTransition(Publishable $content, string $toStatus): bool
     {
@@ -48,6 +57,9 @@ class ContentWorkflowManager
 
     /**
      * Get available transitions for content
+     *
+     * @param Publishable $content
+     * @return Collection
      */
     public function getAvailableTransitions(Publishable $content): Collection
     {
@@ -56,6 +68,11 @@ class ContentWorkflowManager
 
     /**
      * Schedule content publication
+     *
+     * @param Publishable $content
+     * @param \DateTimeInterface $scheduledAt
+     * @param string|null $action
+     * @return bool
      */
     public function schedule(Publishable $content, \DateTimeInterface $scheduledAt, ?string $action = 'publish'): bool
     {
@@ -64,6 +81,10 @@ class ContentWorkflowManager
 
     /**
      * Cancel scheduled action
+     *
+     * @param Publishable $content
+     * @param string|null $action
+     * @return bool
      */
     public function cancelSchedule(Publishable $content, ?string $action = null): bool
     {
@@ -72,6 +93,10 @@ class ContentWorkflowManager
 
     /**
      * Create new version of content
+     *
+     * @param Publishable $content
+     * @param string|null $label
+     * @return bool
      */
     public function createVersion(Publishable $content, ?string $label = null): bool
     {
@@ -80,6 +105,10 @@ class ContentWorkflowManager
 
     /**
      * Restore content to specific version
+     *
+     * @param Publishable $content
+     * @param int $versionNumber
+     * @return bool
      */
     public function restoreVersion(Publishable $content, int $versionNumber): bool
     {
@@ -88,6 +117,9 @@ class ContentWorkflowManager
 
     /**
      * Get all versions of content
+     *
+     * @param Publishable $content
+     * @return Collection
      */
     public function getVersions(Publishable $content): Collection
     {
@@ -96,6 +128,11 @@ class ContentWorkflowManager
 
     /**
      * Log audit entry
+     *
+     * @param Publishable $content
+     * @param string $action
+     * @param array|null $payload
+     * @return bool
      */
     public function logAudit(Publishable $content, string $action, ?array $payload = null): bool
     {
@@ -104,6 +141,9 @@ class ContentWorkflowManager
 
     /**
      * Get audit trail for content
+     *
+     * @param Publishable $content
+     * @return Collection
      */
     public function getAuditTrail(Publishable $content): Collection
     {
@@ -112,6 +152,9 @@ class ContentWorkflowManager
 
     /**
      * Render status badge HTML
+     *
+     * @param Publishable $content
+     * @return string
      */
     public function renderStatus(Publishable $content): string
     {
@@ -120,10 +163,15 @@ class ContentWorkflowManager
 
     /**
      * Check user permission for action
+     *
+     * @param string $action
+     * @param Publishable|null $content
+     * @return bool
      */
     public function can(string $action, ?Publishable $content = null): bool
     {
         if (!$content) {
+
             return false;
         }
         return $content->canPerformAction($action);

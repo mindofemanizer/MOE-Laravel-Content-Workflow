@@ -21,6 +21,12 @@ class ContentEditor extends Component
     public ?string $placeholder = null;
     public bool $showToolbar = true;
 
+    /**
+     * @param Publishable $content
+     * @param string $field
+     * @param string|null $label
+     * @return void
+     */
     public function mount(Publishable $content, string $field = 'content', ?string $label = null): void
     {
         $this->content = $content;
@@ -29,12 +35,18 @@ class ContentEditor extends Component
         $this->editorContent = $content->getAttribute($field) ?? '';
     }
 
+    /**
+     * @return void
+     */
     #[On('editorImageUpload')]
     public function handleImageUpload(): void
     {
         // Handle image upload from editor
     }
 
+    /**
+     * @return void
+     */
     public function updatedEditorContent(): void
     {
         $this->editorContent = $this->sanitizeHtml($this->editorContent);
@@ -42,6 +54,10 @@ class ContentEditor extends Component
         $this->content->save();
     }
 
+    /**
+     * @param string $html
+     * @return string
+     */
     private function sanitizeHtml(string $html): string
     {
         $html = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html);
@@ -57,6 +73,9 @@ class ContentEditor extends Component
         return strip_tags($html, $allowedTags);
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('moe-content::livewire.content-editor');

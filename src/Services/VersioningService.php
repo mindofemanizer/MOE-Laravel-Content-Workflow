@@ -10,12 +10,18 @@ use MOE\ContentWorkflow\Models\ContentVersion;
 
 class VersioningService
 {
+    /**
+     * @param Publishable $content
+     * @param string|null $label
+     * @return bool
+     */
     public function create(Publishable $content, ?string $label = null): bool
     {
         $maxVersions = config('content-workflow.versioning.max_versions', 50);
         $lastVersion = $content->contentVersions()->max('version_number') ?? 0;
 
         if ($lastVersion >= $maxVersions) {
+
             return false;
         }
 
@@ -38,6 +44,12 @@ class VersioningService
         return $result;
     }
 
+    /**
+     * @param Publishable $content
+     * @param int $versionNumber
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
     public function restore(Publishable $content, int $versionNumber): bool
     {
         $version = $content->contentVersions()
@@ -60,6 +72,10 @@ class VersioningService
         return $restored;
     }
 
+    /**
+     * @param Publishable $content
+     * @return Collection
+     */
     public function getVersions(Publishable $content): Collection
     {
         return $content->contentVersions()
@@ -67,6 +83,10 @@ class VersioningService
             ->get();
     }
 
+    /**
+     * @param Publishable $content
+     * @return ContentVersion|null
+     */
     public function getCurrentVersion(Publishable $content): ?ContentVersion
     {
         return $content->contentVersions()
@@ -74,6 +94,11 @@ class VersioningService
             ->first();
     }
 
+    /**
+     * @param Publishable $content
+     * @param int $versionNumber
+     * @return ContentVersion|null
+     */
     public function getVersion(Publishable $content, int $versionNumber): ?ContentVersion
     {
         return $content->contentVersions()
@@ -81,6 +106,13 @@ class VersioningService
             ->first();
     }
 
+    /**
+     * @param Publishable $content
+     * @param int $fromVersion
+     * @param int $toVersion
+     * @return array
+     * @throws \InvalidArgumentException
+     */
     public function diff(Publishable $content, int $fromVersion, int $toVersion): array
     {
         $from = $this->getVersion($content, $fromVersion);
@@ -112,6 +144,9 @@ class VersioningService
         return $changes;
     }
 
+    /**
+     * @param Publishable $content
+     */
     protected function markAllAsNotCurrent(Publishable $content): void
     {
         $content->contentVersions()
@@ -119,9 +154,13 @@ class VersioningService
             ->update(['is_current' => false]);
     }
 
+    /**
+     * @param Publishable $content
+     */
     protected function cleanup(Publishable $content): void
     {
         if (!config('content-workflow.versioning.cleanup_old', true)) {
+
             return;
         }
 

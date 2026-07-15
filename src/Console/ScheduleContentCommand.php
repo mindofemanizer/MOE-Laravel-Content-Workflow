@@ -18,6 +18,9 @@ class ScheduleContentCommand extends Command
 
     protected $description = 'Schedule content actions for one or more content items';
 
+    /**
+     * @return int
+     */
     public function handle(): int
     {
         $action = $this->argument('action');
@@ -28,6 +31,7 @@ class ScheduleContentCommand extends Command
 
         if (!in_array($action, ['publish', 'unpublish', 'archive'], true)) {
             $this->error("Invalid action '{$action}'. Allowed: publish, unpublish, archive.");
+
             return self::FAILURE;
         }
 
@@ -35,6 +39,7 @@ class ScheduleContentCommand extends Command
             $scheduledAt = strtotime($at) ? new \DateTime($at) : throw new \InvalidArgumentException();
         } catch (\Throwable) {
             $this->error("Invalid time format '{$at}'. Use relative like 'now+1hour' or absolute like '2026-07-06 14:00'.");
+
             return self::FAILURE;
         }
 
@@ -46,6 +51,7 @@ class ScheduleContentCommand extends Command
 
         if ($dryRun) {
             $this->warn('Dry-run mode — no changes made.');
+
             return self::SUCCESS;
         }
 
@@ -53,6 +59,7 @@ class ScheduleContentCommand extends Command
 
         if (!$type) {
             $this->error('The --type option is required to resolve content models.');
+
             return self::FAILURE;
         }
 
@@ -72,6 +79,7 @@ class ScheduleContentCommand extends Command
         }
 
         if ($errors > 0) {
+
             return self::FAILURE;
         }
 

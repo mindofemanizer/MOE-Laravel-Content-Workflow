@@ -18,12 +18,20 @@ class ContentVersionHistory extends Component
     public ?array $diff = null;
     public bool $showDiff = false;
 
+    /**
+     * @param Publishable $content
+     * @return void
+     */
     public function mount(Publishable $content): void
     {
         $this->content = $content;
         $this->refreshVersions();
     }
 
+    /**
+     * @param int $versionNumber
+     * @return void
+     */
     public function restore(int $versionNumber): void
     {
         try {
@@ -35,6 +43,11 @@ class ContentVersionHistory extends Component
         }
     }
 
+    /**
+     * @param int $from
+     * @param int $to
+     * @return void
+     */
     public function compare(int $from, int $to): void
     {
         $this->comparingFrom = $from;
@@ -44,6 +57,9 @@ class ContentVersionHistory extends Component
         $this->showDiff = true;
     }
 
+    /**
+     * @return void
+     */
     public function hideDiff(): void
     {
         $this->showDiff = false;
@@ -52,11 +68,17 @@ class ContentVersionHistory extends Component
         $this->comparingTo = null;
     }
 
+    /**
+     * @return void
+     */
     public function refreshVersions(): void
     {
         $this->versions = MoeContent::getVersions($this->content)->toArray();
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('moe-content::livewire.content-version-history');

@@ -36,31 +36,53 @@ class ContentVersion extends Model
         'restored_at' => 'datetime',
     ];
 
+    /**
+     * @return MorphTo
+     */
     public function content(): MorphTo
     {
         return $this->morphTo();
     }
 
+    /**
+     * @param Builder $query
+     * @return void
+     */
     public function scopeCurrent(Builder $query): void
     {
         $query->where('is_current', true);
     }
 
+    /**
+     * @param Builder $query
+     * @param string $type
+     * @param string $id
+     * @return void
+     */
     public function scopeForContent(Builder $query, string $type, string $id): void
     {
         $query->where('content_type', $type)->where('content_id', $id);
     }
 
+    /**
+     * @return void
+     */
     public function markAsCurrent(): void
     {
         $this->update(['is_current' => true]);
     }
 
+    /**
+     * @return void
+     */
     public function markAsNotCurrent(): void
     {
         $this->update(['is_current' => false]);
     }
 
+    /**
+     * @return void
+     */
     protected static function booted(): void
     {
         static::creating(function ($model) {

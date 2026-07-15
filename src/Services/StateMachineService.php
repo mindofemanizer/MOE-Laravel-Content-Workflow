@@ -16,6 +16,14 @@ class StateMachineService
         $this->config = config('content-workflow');
     }
 
+    /**
+     * @param Publishable $content
+     * @param string $toStatus
+     * @param string|null $reason
+     * @return bool
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
     public function transition(Publishable $content, string $toStatus, ?string $reason = null): bool
     {
         $fromStatus = $content->getContentStatus();
@@ -35,42 +43,64 @@ class StateMachineService
         if ($toStatus === 'published' && $fromStatus !== 'published') {
             $content->setPublishedAt(now());
         } elseif ($fromStatus === 'published' && $toStatus !== 'published') {
-            // unpublish handled via observer
         }
 
         return true;
     }
 
+    /**
+     * @param Publishable $content
+     * @param string $toStatus
+     * @return bool
+     */
     public function canTransition(Publishable $content, string $toStatus): bool
     {
         try {
+
             return $this->isTransitionAllowed($content->getContentStatus(), $toStatus)
                 && $content->canPerformAction("transition:{$toStatus}");
         } catch (\Throwable) {
+
             return false;
         }
     }
 
+    /**
+     * @param Publishable $content
+     * @return Collection
+     */
     public function getAvailableTransitions(Publishable $content): Collection
     {
         $fromStatus = $content->getContentStatus();
         $allowed = $this->config['transitions'][$fromStatus] ?? [];
 
         return collect($allowed)->filter(function ($toStatus) use ($content) {
+
             return $content->canPerformAction("transition:{$toStatus}");
         })->values();
     }
 
+    /**
+     * @param string $status
+     * @return array|null
+     */
     public function getStatusInfo(string $status): ?array
     {
         return $this->config['statuses'][$status] ?? null;
     }
 
+    /**
+     * @return Collection
+     */
     public function getAllStatuses(): Collection
     {
         return collect($this->config['statuses']);
     }
 
+    /**
+     * @param Publishable $content
+     * @return string
+     */
     public function renderStatusBadge(Publishable $content): string
     {
         $status = $content->getContentStatus();
@@ -96,17 +126,27 @@ class StateMachineService
             . e($label) . '</span>';
     }
 
+    /**
+     * @param string $from
+     * @param string $to
+     * @return bool
+     */
     public function isTransitionAllowed(string $from, string $to): bool
     {
         $transitions = $this->config['transitions'] ?? [];
 
         if (!isset($transitions[$from])) {
+
             return false;
         }
 
         return in_array($to, $transitions[$from], true);
     }
 
+    /**
+     * @param string $status
+     * @return bool
+     */
     public function isValidStatus(string $status): bool
     {
         return isset($this->config['statuses'][$status]);

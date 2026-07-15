@@ -10,6 +10,12 @@ use MOE\ContentWorkflow\Models\ContentAudit;
 
 class AuditService
 {
+    /**
+     * @param Publishable $content
+     * @param string $action
+     * @param array|null $payload
+     * @return bool
+     */
     public function log(Publishable $content, string $action, ?array $payload = null): bool
     {
         $field = null;
@@ -42,6 +48,13 @@ class AuditService
         return $audit->save();
     }
 
+    /**
+     * @param Publishable $content
+     * @param string $field
+     * @param mixed $oldValue
+     * @param mixed $newValue
+     * @return bool
+     */
     public function logFieldChange(Publishable $content, string $field, mixed $oldValue, mixed $newValue): bool
     {
         return $this->log($content, 'updated', [
@@ -51,6 +64,13 @@ class AuditService
         ]);
     }
 
+    /**
+     * @param Publishable $content
+     * @param string $from
+     * @param string $to
+     * @param string|null $reason
+     * @return bool
+     */
     public function logStatusChange(Publishable $content, string $from, string $to, ?string $reason = null): bool
     {
         $payload = [
@@ -66,6 +86,10 @@ class AuditService
         return $this->log($content, 'status_changed', $payload);
     }
 
+    /**
+     * @param Publishable $content
+     * @return Collection
+     */
     public function getTrail(Publishable $content): Collection
     {
         return $content->contentAudits()
@@ -73,6 +97,11 @@ class AuditService
             ->get();
     }
 
+    /**
+     * @param Publishable $content
+     * @param string $action
+     * @return Collection
+     */
     public function getTrailForAction(Publishable $content, string $action): Collection
     {
         return $content->contentAudits()
@@ -81,6 +110,10 @@ class AuditService
             ->get();
     }
 
+    /**
+     * @param int $limit
+     * @return Collection
+     */
     public function getRecent(int $limit = 50): Collection
     {
         return ContentAudit::orderByDesc('created_at')
@@ -88,6 +121,11 @@ class AuditService
             ->get();
     }
 
+    /**
+     * @param int $userId
+     * @param int $limit
+     * @return Collection
+     */
     public function getByUser(int $userId, int $limit = 50): Collection
     {
         return ContentAudit::where('user_id', $userId)
@@ -96,11 +134,15 @@ class AuditService
             ->get();
     }
 
+    /**
+     * @return int
+     */
     public function cleanup(): int
     {
         $retention = config('content-workflow.audit.log_retention_days', 365);
 
         if ($retention <= 0) {
+
             return 0;
         }
 

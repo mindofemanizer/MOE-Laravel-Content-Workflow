@@ -19,6 +19,9 @@ class ExecuteScheduledAction implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * @param ContentSchedule $schedule
+     */
     public function __construct(
         public ContentSchedule $schedule,
     ) {
@@ -26,11 +29,19 @@ class ExecuteScheduledAction implements ShouldQueue
         $this->onQueue(config('content-workflow.queue.queue', 'content-workflow'));
     }
 
+    /**
+     * @param ScheduleService $scheduleService
+     * @return void
+     */
     public function handle(ScheduleService $scheduleService): void
     {
         $scheduleService->executeSchedule($this->schedule);
     }
 
+    /**
+     * @param \Throwable $e
+     * @return void
+     */
     public function failed(\Throwable $e): void
     {
         $this->schedule->markFailed($e->getMessage());

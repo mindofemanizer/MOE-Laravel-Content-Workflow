@@ -15,6 +15,9 @@ use MOE\ContentWorkflow\Services\VersioningService;
 
 class ContentWorkflowServiceProvider extends ServiceProvider
 {
+    /**
+     * @return void
+     */
     public function register(): void
     {
         $this->mergeConfigFrom(
@@ -31,6 +34,9 @@ class ContentWorkflowServiceProvider extends ServiceProvider
         $this->app->singleton(AuditService::class);
     }
 
+    /**
+     * @return void
+     */
     public function boot(): void
     {
         $this->registerPublishing();
@@ -40,9 +46,13 @@ class ContentWorkflowServiceProvider extends ServiceProvider
         $this->registerViews();
     }
 
+    /**
+     * @return void
+     */
     protected function registerPublishing(): void
     {
         if (!$this->app->runningInConsole()) {
+
             return;
         }
 
@@ -59,9 +69,13 @@ class ContentWorkflowServiceProvider extends ServiceProvider
         ], 'moe-content-views');
     }
 
+    /**
+     * @return void
+     */
     protected function registerCommands(): void
     {
         if (!$this->app->runningInConsole()) {
+
             return;
         }
 
@@ -71,27 +85,37 @@ class ContentWorkflowServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * @return void
+     */
     protected function registerBladeDirectives(): void
     {
         $blade = $this->app->make('view')->getEngineResolver()->resolve('blade')->getCompiler();
 
         $blade->directive('moeContentStatus', function ($expression) {
+
             return "<?php echo app('moe.content')->renderStatus($expression); ?>";
         });
 
         $blade->directive('moeContentCan', function ($expression) {
+
             return "<?php if (app('moe.content')->can($expression)): ?>";
         });
 
         $blade->directive('endmoeContentCan', function () {
+
             return '<?php endif; ?>';
         });
 
     }
 
+    /**
+     * @return void
+     */
     protected function registerLivewireComponents(): void
     {
         if (!class_exists(Livewire::class)) {
+
             return;
         }
 
@@ -102,6 +126,9 @@ class ContentWorkflowServiceProvider extends ServiceProvider
         Livewire::component('moe-content-audit-log', \MOE\ContentWorkflow\Http\Livewire\ContentAuditLog::class);
     }
 
+    /**
+     * @return void
+     */
     protected function registerViews(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'moe-content');

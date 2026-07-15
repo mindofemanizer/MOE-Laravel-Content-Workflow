@@ -16,12 +16,20 @@ class ContentStatusManager extends Component
     public ?string $reason = null;
     public bool $showReason = false;
 
+    /**
+     * @param Publishable $content
+     * @return void
+     */
     public function mount(Publishable $content): void
     {
         $this->content = $content;
         $this->refreshTransitions();
     }
 
+    /**
+     * @param string $toStatus
+     * @return void
+     */
     public function changeStatus(string $toStatus): void
     {
         try {
@@ -35,11 +43,17 @@ class ContentStatusManager extends Component
         }
     }
 
+    /**
+     * @return void
+     */
     public function refreshTransitions(): void
     {
         $this->availableTransitions = MoeContent::getAvailableTransitions($this->content)->toArray();
     }
 
+    /**
+     * @return View
+     */
     public function render(): View
     {
         return view('moe-content::livewire.content-status-manager', [

@@ -10,6 +10,14 @@ use MOE\ContentWorkflow\Models\ContentSchedule;
 
 class ScheduleService
 {
+    /**
+     * @param Publishable $content
+     * @param \DateTimeInterface $scheduledAt
+     * @param string $action
+     * @param array|null $payload
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
     public function create(Publishable $content, \DateTimeInterface $scheduledAt, string $action = 'publish', ?array $payload = null): bool
     {
         if (!$this->isActionValid($action)) {
@@ -33,6 +41,11 @@ class ScheduleService
         return $schedule->save();
     }
 
+    /**
+     * @param Publishable $content
+     * @param string|null $action
+     * @return bool
+     */
     public function cancel(Publishable $content, ?string $action = null): bool
     {
         $query = ContentSchedule::forContent($content->getMorphClass(), (string) $content->getKey())
@@ -52,6 +65,9 @@ class ScheduleService
         return $cancelled > 0;
     }
 
+    /**
+     * @return int
+     */
     public function executePending(): int
     {
         $executed = 0;
@@ -70,17 +86,24 @@ class ScheduleService
         return $executed;
     }
 
+    /**
+     * @param ContentSchedule $schedule
+     * @return void
+     * @throws \InvalidArgumentException
+     */
     public function executeSchedule(ContentSchedule $schedule): void
     {
         $content = $schedule->content;
 
         if (!$content) {
             $schedule->markFailed('Content not found.');
+
             return;
         }
 
         if (!$content instanceof Publishable) {
             $schedule->markFailed('Content is not publishable.');
+
             return;
         }
 
@@ -111,6 +134,10 @@ class ScheduleService
         $schedule->markExecuted();
     }
 
+    /**
+     * @param Publishable $content
+     * @return Collection
+     */
     public function getPendingSchedules(Publishable $content): Collection
     {
         return $content->contentSchedules()
@@ -119,6 +146,11 @@ class ScheduleService
             ->get();
     }
 
+    /**
+     * @param \DateTimeInterface $from
+     * @param \DateTimeInterface|null $to
+     * @return Collection
+     */
     public function getUpcoming(\DateTimeInterface $from, ?\DateTimeInterface $to = null): Collection
     {
         $query = ContentSchedule::pending()
@@ -131,6 +163,10 @@ class ScheduleService
         return $query->orderBy('scheduled_at')->get();
     }
 
+    /**
+     * @param string $action
+     * @return bool
+     */
     protected function isActionValid(string $action): bool
     {
         return in_array($action, ['publish', 'unpublish', 'archive', 'status_change'], true);
